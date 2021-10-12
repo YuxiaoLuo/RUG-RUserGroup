@@ -4,7 +4,7 @@ author: "Yuxiao Luo"
 date: "10/8/2021"
 output: 
   html_document:
-    keep_md: true
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
