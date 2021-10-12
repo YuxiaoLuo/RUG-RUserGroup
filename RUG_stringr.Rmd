@@ -2,8 +2,9 @@
 title: "Strings_RUG"
 author: "Yuxiao Luo"
 date: "10/8/2021"
-output: html_document
-  
+output: 
+  html_document:
+    keep_md: true
 ---
 
 ```{r setup, include=FALSE}
