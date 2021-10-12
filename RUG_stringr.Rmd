@@ -1,0 +1,372 @@
+---
+title: "Strings_RUG"
+author: "Yuxiao Luo"
+date: "10/8/2021"
+output: html_document
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Dealing with strings in R
+
+There two popular packages to handle strings in R, one is `stringi` and the other is `stringr`. The comments from Hadley Wickham (author of the book [R for Data Science](https://r4ds.had.co.nz/)) saying:
+
+- `stringi` provides tools to do anything we could ever want to do with strings, where `stringr` provides tools to do the most common 95% of operations. This allows `stringr` to be much simpler, and the cost of some flexibility.
+
+- Additionally `stringi` is implemented in C using the ICU string library, so it's very fast and very correct (it deals with unicode better than base R).
+
+`stringr` now is using `stringi` on the back end, so `stringr` will get all the performance benefits, and we can continue to use the simple interface. As these two packages have very similar syntax and function structures, switching between them are unimaginably easy. Let's take a look at the functions in `stringi` and `stringr`.
+
+```{r stringr & stringi}
+library(stringi)
+library(stringr)
+
+# package version for stringi
+packageVersion("stringi")
+
+# packag version for stringr
+packageVersion("stringr")
+
+# functions in stringi
+ls("package:stringi")
+
+# functions in stringr
+ls("package:stringr")
+```
+
+Let's learn `stringr` first to get started with string manipulation in R. 
+
+## Introduction to stringr
+
+`stringr` is a R package for dealing with strings. There are 4 families of functions
+
+- Character manipulation functions will allow you to create and change characters in the strings in character vectors
+
+- whitespace tools to add, remove, and manipulate whitespace
+
+- Locale sensitive operations whose operations will vary from locale to locale 
+
+- Pattern matching functions. Ex., regular expressions, etc. 
+
+
+### Dealing with individual characters
+
+Let's load the package `stringr`
+
+```{r load package, warning=FALSE, message=FALSE}
+library(stringr)
+```
+
+Let's take a look at the following functions: 
+`str_length()` is equivalent to `nchar`, the base R function. 
+
+```{r functions1}
+str_length('abc')
+
+nchar('abc')
+
+nchar(NA)
+
+str_length(NA)
+```
+
+`str_sub()` can subset a string and it takes 3 arguments: a character vector, a `start` position, and an `end` position. If the position is a positive integer, it will be counted from the left; if it's a negative integer, it will be counted from the right. The positions are inclusive and will be truncated silently if they are longer than the string. `omit_na` is a logical argument and will omit the missing values. 
+
+```{r function2}
+x <- c("gcdi", "digitalfellows")
+
+# subset the 3rd letter
+str_sub(x, 3, 3)
+
+# subset the 4th to the last character for each element
+str_sub(x, 4, -2)
+
+# subset the 2nd to the 2nd-to-last character
+str_sub(x, 2, -2)
+
+# use str_sub() to modify strings
+str_sub(x, 3, 3) <- "MIDDLE"
+x
+```
+
+`str_dup()` is used to duplicate individuals. `string` is the input character vector and `times` specify the number of times to duplicate each string in the character vector. 
+
+```{r function3}
+x <- c("gcdi", "digitalfellows")
+str_dup(x, c(2,3))
+
+fruit <- c("apple", "pear", "banana")
+str_dup(fruit, 2)
+
+str_dup(fruit, 1:3)
+```
+`str_c(.., sep = "", collapse = NULL)` joins two or more vectors element-wise into a single character vector, optionally inserting `sep` between input vectors. `paste()` does the same thing. 
+
+```{r}
+str_c("Letter: ", letters)
+
+paste("Letter:" , letters)
+
+str_c("Letter", letters, sep = ": ")
+
+str_c(letters, collapse = ",")
+
+paste(letters, collapse =",")
+
+```
+
+### Whitespace
+
+Three functions add, remove, or modify whitespace:
+
+- `str_pad()` pads a string to a fixed length by adding extra whitespace on the left, right, or both sides. You can specify the side with 3 options ("left", "right", "both").You can pad with other characters by using the `pad` argument, but it only takes single padding character (deafult is space)
+
+- `str_trunc(string, width, side = c('right','left','center'), ellipsis = '...')` can truncate a character string. `width` is the maximum width of string. 
+
+```{r}
+(x <- c("abc" , "defghi"))
+str_pad(x , 10) # default pads on left
+
+str_pad(x, 10, "both")
+
+# change padding character 
+str_pad(x, 10, pad = "!")
+
+# *it does a make string shorter
+str_pad(x, 4)
+
+# make sure that all strings are the same length 
+x %>% str_trunc(6)%>% 
+  str_pad(10, "right") 
+
+x %>% str_trunc(5)%>% 
+  str_pad(10, "right")
+
+```
+
+The opposite of `str_pad()` is `str_trim()`, which removes leading and trailing white space.
+
+```{r}
+x <- c("  a   ", "b   ",  "   c")
+str_trim(x)
+
+str_trim(x, "left")
+
+str_trim(x, "right")
+```
+
+`str_wrap` can modify existing whitespace in order to wrap a paragraph of text, such that the length of each line is as similar as possible. It's implementing the Knuth-Plass paragraph wrapping algorithm. 
+
+```{r}
+jabberwocky <- str_c(
+  "`Twas brillig, and the slithy toves ",
+  "did gyre and gimble in the wabe: ",
+  "All mimsy were the borogoves, ",
+  "and the mome raths outgrabe. "
+)
+
+cat(jabberwocky)
+
+str_wrap(jabberwocky, width = 40)
+```
+
+### Pattern matching
+
+Pattern matching functions usually have the same first two arguments, a character vector of `string` to process and a single `pattern` to match. **stringr** provides pattern matching functions to detect, locate, extract, match, replace, and split strings. **Regular expression** is useful in extracting information from text such as code, log files, spreadsheets. You can find how to use regular expression [here](https://regexone.com/).
+
+Each pattern matching function has the same first two arguments, a character vetor of `string`s to process and a single `pattern` to match. stringr provides pattern matching functions to detect, locate, extract, match, replace, and split strings. Let's see how to use these functions to work with the strings and a regular expression designed to match (US) phone numbers: 
+
+```{r pattern matching}
+strings <- c(
+  "apple", 
+  "219 733 8965", 
+  "329-293-8753", 
+  "Work: 579-499-7527; Home: 543.355.3679"
+)
+
+# define pattern 
+phone <- "([2-9][0-9]{2})[- .]([0-9]{3})[- .]([0-9]{4})"
+```
+
+- `str_detect` detects the presence or absence of a pattern and returns a logical vector (similar to `grepl` function in base R).
+
+- `str_subset` returns the elements of a character vector that match a regular expression. (similar to `grep` with `value = T`). 
+
+```{r}
+# Which strings contain phone numbers?
+# return matching elements
+str_detect(strings, phone)
+
+# negate = TRUE will return non-matching elements
+str_detect(strings, phone, negate = TRUE)
+
+# return character elements instead of logical value
+str_subset(strings, phone)
+
+# return non-matching elements
+str_subset(strings, phone, negate = T)
+```
+
+- `string_count` counts number of matches in each string 
+
+- ` str_loate` locates the **first** position of a pattern and returns a numeric matrix with columns start and end. 
+
+- `str_locate_all` locates all matches, returning a list of numeric matrices. Like `regexpr` and `gregexpr`. 
+
+```{r}
+# return vector
+str_count(strings, phone)
+
+# return list
+str_locate(strings, phone)
+
+# return list
+str_locate_all(strings, phone)
+```
+
+- `str_extract` extracts text corresponding to the first match, returning a character vector. 
+
+- `str_extract_all` extracts all matches and returns a list of character vectors. 
+
+```{r}
+str_extract(strings, phone)
+
+str_extract_all(strings, phone)
+
+# simplify = T returns a character matrix instead of a list of character vectors
+str_extract_all(strings, phone, simplify = TRUE)
+```
+
+- `string_match` extracts capture groups formed by `()` from the first match and returns a **character matrix** with one column for the complete match and one column for each group in the matched pattern. 
+
+- `str_match_all` extracts capture groups from all matches and returns a list of character matrics. 
+
+```{r}
+str_match(strings, phone)
+
+str_match_all(strings, phone)
+```
+
+- `str_replace` replaces the first matched patter and returns a character vector. 
+
+- `str_replace_all` replace all matches. Similar to `sub` and `gsub`. 
+
+```{r}
+str_replace(strings, phone, "xxx-xxx-xxxx")
+
+str_replace(strings, phone, "GC-Digital-Fellows")
+
+str_replace_all(strings, phone, "GC-Digital-Fellows")
+```
+
+- `str_split_fixed` splits a string into a fixed number of pieces based on a pattern and returns a character matrix. Similar to `strsplit` in the base R function. 
+
+- `str_split` splits a string into a **variable** number of pieces and returns a list of character vectors. 
+
+```{r, error=TRUE}
+# default of n is Inf 
+# uses all possible split positions
+str_split('a-b-c', '-')
+
+str_split('a-b-c', '-', n =2)
+
+str_split('a-b-c', '-', n =1)
+
+# if n is greater than possible number of pieces 
+# return still sticks to the maximum number of pieces
+str_split('a-b-c', '-', n =4)
+
+# if n is not specified in the function
+# error message will show 
+str_split_fixed('a-b-c', '-')
+
+str_split_fixed('a-b-c', '-', n = 2)
+
+str_split_fixed('a-b-c', '-', n = 3)
+
+# if n is greater than number of pieces
+# result will be padded with empty strings
+str_split_fixed('a-b-c', '-', n = 5)
+
+# when you don't know how many pieces to split
+# use str_split
+# empty strings is used to show position of the matched pattern
+str_split(strings, phone)
+str_split(strings, '9', simplify = TRUE)
+```
+
+### Engines 
+
+There are four main engines that stringr can use to describe patterns: 
+
+- Regular expressions, the default, as shown above, and described in `vignette("regular-expressions")`.
+
+- Fixed-sensitive character matching, with `coll()`.
+
+- Text boundary analysis with `boundary()`.
+
+#### Control matching behavior with modifier functions
+
+`fixed(x)`(fixed match) compares literal bytes in the string. This is very fast, but it only matchaes the exact sequence of bytes specified by `x` and not usually what you want for non-ASCII character sets. The restriction can make matching much faster, but it's a little tricky with non-English data. It's problematic because of the multiple ways of representing the same character. For example, defining “á”: either as a single character or as an "a" plus an accent, renders identically. But they're defined differently. 
+
+```{r fixed}
+a1 <- "\u00e1"
+
+a2 <- "a\u0301"
+
+c(a1, a2)
+
+print(a1 == a2)
+
+str_detect(a1, a2)
+
+str_detect(a1, fixed(a2))
+```
+
+`coll`(collation search) compares strings respecting standard collation rules (human character comparison rules). It is especially important if you want to do case insensitive matching. Collation rules differ around the world, so you'll also need to supply a `locale` parameter.
+
+Locale is a fundamental concept in [**ICU**](https://icu.unicode.org/), International Components for Unicode. ICU is implemented as a set of services. If you want to verify whether particular resources are available in the locale you asked for, you must query those resources. Note: when you ask for a resource for a particular locale, you get back the best available match, not necessarily precisely the one you requested. **ICU** services are parametrized by locale, to deliver culturally correct results. Locales are identified by character strings of the form `Language` code, `Language_Country` code, or `Language_Country_Variant` code, e.g., 'en_US'. More details about **locale* can be found [here](https://unicode-org.github.io/icu/userguide/locale/#overview).
+
+`coll` is relatively slow compared to `regex` and `fixed`. Note that when both `fixed` and `regex` have `ignore_case` arguments, they perform a much simpler comparison than `coll`. 
+
+```{r coll}
+str_detect(a1, coll(a2))
+
+(i <- c("I", "İ", "i", "ı"))
+str_subset(i, coll("i", ignore_case = TRUE))
+str_subset(i, coll("i", ignore_case = TRUE, locale = "tr"))
+
+str_subset(strings, fixed("w", ignore_case = T))
+
+str_subset(strings, coll("w", ignore_case = T))
+```
+
+`boundary` matches boundaries between characters, lines, sentences, or words. It's most useful with `str_split`
+
+```{r boundary}
+x <- "This is a sentence."
+
+str_split(x, boundary("word"))
+
+str_count(x, boundary("word"))
+
+str_extract_all(x, boundary("word"))
+
+str_split(x, "")
+str_split(x, boundary("character"))
+
+str_count(x, "")
+str_count(x, boundary("character"))
+```
+
+
+Reference: 
+
+- The R demo is adapted from the vignettes in `stringr` and written by [Yuxiao Luo](https://github.com/YuxiaoLuo), you can find more details about the original instructions [here](https://cran.r-project.org/web/packages/stringr/vignettes/stringr.html).
+
+- The comparison between `stringi` and `stringr` is adapted from [RPubs](https://rpubs.com/Haibiostat/stringi_r) by Hai Nguyen. 
+
+
