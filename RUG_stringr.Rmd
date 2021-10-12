@@ -3,8 +3,8 @@ title: "Strings_RUG"
 author: "Yuxiao Luo"
 date: "10/8/2021"
 output: 
-  md_document:
-    variant: markdown_github
+  html_document:
+    keep_md: true
 ---
 
 ```{r setup, include=FALSE}
