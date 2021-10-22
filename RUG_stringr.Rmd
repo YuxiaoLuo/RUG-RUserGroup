@@ -211,7 +211,7 @@ str_subset(strings, phone)
 str_subset(strings, phone, negate = T)
 ```
 
-- `string_count` counts number of matches in each string 
+- `str_count` counts number of matches in each string 
 
 - ` str_loate` locates the **first** position of a pattern and returns a numeric matrix with columns start and end. 
 

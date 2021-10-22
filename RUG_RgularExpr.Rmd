@@ -1,0 +1,228 @@
+---
+title: "RUG1022_Regex"
+author: "Yuxiao Luo"
+date: "10/21/2021"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Intro to Regular Expressions in R
+
+Regular expressions can describe patterns in strings. This is short demo cannot include all the details about regular expressions, if you are interested, please find more [here](https://r4ds.had.co.nz/strings.html) or explore in [RegexOne](https://regexone.com/).
+
+## Basic match
+
+Regular expressions are the default pattern engine in `stringr`. When you use a pattern matching function with a bare string, it's euivalent to wrapping it in a call to `regex()`. You will need to use `regex()` explicitly if you want to override the default options by changing the arguments in `regex()`. 
+
+```{r load}
+library(stringr)
+```
+
+`fruit` and `words` are vectors of words come from the `rcorpora` package written by Gabor Csardi. Let's do some basic matches using `str_extract` and `str_detect`. 
+
+```{r regex}
+fruit
+
+# The regular call
+str_extract(fruit, "nana")
+
+# is the shorthand for 
+str_extract(fruit, regex("nana"))
+
+(x <- fruit[1:3])
+str_extract(x, "ap")
+
+# You can perform a case-insensitive match using
+# ignore_case = T in regex()
+bananas <- c("banana", "Banana", "BANANA")
+
+str_detect(bananas, "banana")
+
+str_detect(bananas, regex("banana", ignore_case = T))
+
+# . can match any character except a newline
+str_extract(x, ".a.")
+
+str_detect("\nX\n", ".X.")
+
+# But you can allow . to match everything, including \n
+# setting dotall = TRUE
+str_detect("\nX\n", regex(".X.", dotall = T))
+```
+## Escaping 
+
+You need to use an "escape" when you want to match a literal ".". 
+
+- Like strings, regexps use the backslash ,`\`, to escape special behavior. 
+
+- To match a `.`, you need the regexp `\.`. We use strings to represent regular expressions, and `\` is also used as an escape symbol in strings. 
+
+- So to create the regular expression `\.`, we need the string `"\\."` because both strings and regular expressions are using `\` as escape symbol. In other words, We use `\.` to denote the regular expression, and use `"\\."` to denote the string that represents a regular expression. 
+
+```{r escape}
+# create the regex for dot
+dot <- "\\."
+dot
+writeLines(dot)
+
+# And this tells R to look for an explicit dot
+str_extract(c("abc", "a.c", "bef"), "a\\.c")
+str_detect(c("abc", "a.c"), "a\\.c")
+
+```
+
+An alternative quoting mechanism is `\Q...\E`: all the characters in `...` are treated as exact matches. This is useful if you want to exactly match user input as part of a regular expression. 
+
+```{r}
+x <- c("a.b.c.d", "aeb")
+starts_with <- "a.b"
+
+# dot can represent anything except newline
+str_extract(x , paste0("^", starts_with))
+
+# dot can only represent dot with `\Q...\W`
+str_extract(x ,paste0("^\\Q", starts_with, "\\E"))
+```
+
+## Special characters
+
+Escapes also allow you to specify individual characters that are otherwise hard to type. You can specify individual unicode characters in five ways, either as a variable number of hex digits (four is most common), or by name:
+
+- `\xhh`: 2 hex digits.
+- `\x{hhhh}`: 1-6 hex digits.
+- `\uhhhh`: 4 hex digits.
+- `\Uhhhhhhhh`: 8 hex digits.
+- `\N{name}`, e.g. `\N{grinning face}` matches the basic smiling emoji.
+
+### Hexadecimal 
+
+Note that Hexadecimal (or **hex**) is a base 16 system used to simplify how binary is represented. A hex digit can be any of the following 16 digits: 0 1 2 3 4 5 6 7 8 9 A B C D E F. Each hex digit reflects a 4-**bit** binary sequence. Hex codes are used in many areas of computing to simplify binary codes. Computers do not use hexadecimal and it is only used by humans to shorten binary to a more easily understandable form. Hexadecimal can be used for color references (ex., white is **#FFFFFF** and `#` symbol indicates that number has been written in hex format), assembly language programs, and error messages. If you are making a web page with HTML or CSS, you can use hex codes to choose the colors. 
+
+The table below shows the conversion among Denary, Binary, and Hexadecimal number system. 
+
+| Denary | Binary | Hexadecimal |
+|:------:|:------:|:-----------:|
+| 0      | 0000   | 0           |
+| 1      | 0001   | 1           |
+| 2      | 0010   | 2           |
+| 3      | 0011   | 3           |
+| 4      | 0100   | 4           |
+| 5      | 0101   | 5           |
+| 6      | 0110   | 6           |
+| 7      | 0111   | 7           |
+| 8      | 1000   | 8           |
+| 9      | 1001   | 9           |
+| 10     | 1010   | A           |
+| 11     | 1011   | B           |
+| 12     | 1100   | C           |
+| 13     | 1101   | D           |
+| 14     | 1110   | E           |
+| 15     | 1111   | F           |
+
+For example: 
+
+- **11010100** in binary would be **D4** in hex
+- **FFFF3** in hex is **11111111111111110011** in binary
+
+### Control Characters
+
+Similarly, you can specify many common control characters:
+
+- `\a`: bell.
+- `\cX`: match a control-X character.
+- `\e`: escape (`\u001B`).
+- `\f`: form feed (`\u000C`).
+- `\n`: line feed (`\u000A`).
+- `\r`: carriage return (`\u000D`).
+- `\t`: horizontal tabulation (`\u0009`).
+- `\0ooo` match an octal character. ‘ooo’ is from one to three octal digits, from 000 to 0377. The leading zero is required.
+
+```{r special character, error = TRUE}
+y <- c("1233", "123")
+str_extract(y, "\.")
+```
+
+
+## matching multiple characters
+
+There are a number of patterns that match more than one character. You’ve already seen `.`, which matches any character (except a newline). 
+**A closely related operator is `\X`, which matches a grapheme cluster, a set of individual elements that form a single symbol**. For example, one way of representing “á” is as the letter “a” plus an accent: `.` will match the component “a”, while `\X` will match the complete symbol:
+
+
+```{r matching multiple}
+x <- "a\u0301"
+str_extract(x, ".")
+
+str_extract(x, "\\X")
+```
+
+There are five other escaped pairs that match narrower classes of characters: 
+
+- `\d` matches any digit. The complement, `\D` matches any character that is not a decimal digit.
+
+```{r digit}
+
+```
+
+- `\s` matches any whitespace. This includes tabs, newlines, form feeds, and any character in the Unicode Z Category (which includes a variety of space characters and other separators.). The complement, `\S`, matches any non-whitespace character. 
+
+```{r whitespace}
+
+```
+
+- `\p{property name}` matches any character with specific unicode property, like `\p{Uppercase}` or `\p{diacritic}`. The complement, `\P{property name}`, matches all characters without the property. A complete list of unicode properties can be found [here](http://www.unicode.org/reports/tr44/#Property_Index). Note: The properties can be used to handle characters (code points) in processes, like in line-breaking, script direction right-to-left or applying controls. Some "character properties" are also defined for code points that have no character assigned, and code points that are labeled like "<not a character>". The character properties are described in [Standard Annex #44](https://www.unicode.org/reports/tr44/). Properties have levels of forcefulness: normative, informative, contributory, or provisional.
+
+```{r}
+
+```
+
+- `\w` matches any “word” character, which includes alphabetic characters, marks and decimal numbers. The complement, `\W`, matches any non-word character. Technically, `\w` also matches [connector punctuation](http://www.unicode.org/charts/beta/script/chart_Punctuation-Connector.html), `\u200c` (zero width connector), and `\u200d` (zero width joiner), but these are rarely seen in the wild.
+
+```{r}
+
+
+```
+
+- `\b` matches word boundaries, the transition between word and non-word characters. `\B` matches the opposite: boundaries that have either both word or non-word characters on either side.
+
+```{r}
+
+```
+
+You can also create your own character classes using `[]`:
+
+- `[abc]`: matches a, b, or c.
+- `[a-z]`: matches every character between a and z (in Unicode code point order).
+- `[^abc]`: matches anything except a, b, or c.
+- `[\^\-]`: matches ^ or -.
+
+There are a number of pre-built classes that you can use inside `[]`:
+
+- `[:punct:]`: punctuation.
+- `[:alpha:]`: letters.
+- `[:lower:]`: lowercase letters.
+- `[:upper:]`: upperclass letters.
+- `[:digit:]`: digits.
+- `[:xdigit:]`: hex digits.
+- `[:alnum:]`: letters and numbers.
+- `[:cntrl:]`: control characters.
+- `[:graph:]`: letters, numbers, and punctuation.
+- `[:print:]`: letters, numbers, punctuation, and whitespace.
+- `[:space:]`: space characters (basically equivalent to \s).
+- `[:blank:]`: space and tab.
+
+These all go inside the `[]` for character classes, i.e. `[[:digit:]AX]` matches all digits, A, and X.
+
+You can also using Unicode properties, like `[\p{Letter}]`, and various set operations, like `[\p{Letter}--\p{script=latin}]`. See `?"stringi-search-charclass"` for details.
+
+
+Reference: 
+
+- The R demo is adapted from the vignettes in `stringr` and written by [Yuxiao Luo](https://github.com/YuxiaoLuo), you can find more details about the original instructions [here](https://cran.r-project.org/web/packages/stringr/vignettes/stringr.html).
+
+- The introduction about Hexadecimals is adapted from this [guide](https://www.bbc.co.uk/bitesize/guides/zp73wmn/revision/2).
+
+
