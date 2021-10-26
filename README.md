@@ -5,5 +5,5 @@ R User's Group (i.e., RUG) is a place for newbies and experts alike to learn and
 - Time: we usually hold bi-weekly meeting every semester 
 - Members: all the graduate students at The Graduate Center, City University of New York are welcome. If you are not a CUNY GC students, you can use still use our materials to learn R. 
 - Organizer: Digital Fellows at [GCDI](https://gcdi.commons.gc.cuny.edu/) (Graduate Center Digital Initiatives)
-- Current lead fellow: Yuxiao Luo (2021 Fall - )
+- Current lead fellow: [Yuxiao Luo](https://github.com/YuxiaoLuo) (2021 Fall - )
 - Other events: you can find more events at the GCDI [Calendar](https://gcdi.commons.gc.cuny.edu/calendar/), including workshops in Python, R, Sound Editing, Data Ethics, etc..  
