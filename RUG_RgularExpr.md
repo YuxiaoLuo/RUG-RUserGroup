@@ -369,7 +369,7 @@ set operations, like `[\p{Letter}--\p{script=latin}]`. See
 A cheat-sheet of Regex is attached below
 ([source](http://stanford.edu/~wpmarble/webscraping_tutorial/regex_cheatsheet.pdf)):
 
-![Regex](./images/regex_cheatsheet.pdf)
+![Regular Expression Cheat Sheet](./images/regex_cheatsheet.pdf)
 
 Reference:
 
