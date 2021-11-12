@@ -220,9 +220,7 @@ You can also using Unicode properties, like `[\p{Letter}]`, and various set oper
 
 A cheat-sheet of Regex is attached below ([source](http://stanford.edu/~wpmarble/webscraping_tutorial/regex_cheatsheet.pdf)): 
 
-```{r, echo = FALSE}
-xfun::embed_file("./images/regex_cheatsheet.pdf")
-```
+![Regex](./images/regex_cheatsheet.pdf)
 
 Reference: 
 
