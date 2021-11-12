@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Intro to Regular Expressions in R
 
-Regular expressions can describe patterns in strings. This is short demo cannot include all the details about regular expressions, if you are interested, please find more [here](https://r4ds.had.co.nz/strings.html) or explore in [RegexOne](https://regexone.com/).
+Regular expressions can describe patterns in strings. This is short demo cannot include all the details about regular expressions, if you are interested, please find more [here](https://r4ds.had.co.nz/strings.html) or explore in [RegexOne](https://regexone.com/) and [Regular Expression Info](https://www.regular-expressions.info/index.html).
 
 ## Basic match
 
@@ -218,6 +218,11 @@ These all go inside the `[]` for character classes, i.e. `[[:digit:]AX]` matches
 
 You can also using Unicode properties, like `[\p{Letter}]`, and various set operations, like `[\p{Letter}--\p{script=latin}]`. See `?"stringi-search-charclass"` for details.
 
+A cheat-sheet of Regex is attached below ([source](http://stanford.edu/~wpmarble/webscraping_tutorial/regex_cheatsheet.pdf)): 
+
+```{r, echo = FALSE}
+xfun::embed_file("./images/regex_cheatsheet.pdf")
+```
 
 Reference: 
 
