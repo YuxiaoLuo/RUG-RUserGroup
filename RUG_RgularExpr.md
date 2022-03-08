@@ -272,12 +272,12 @@ Similarly, you can specify many common control characters:
 
 ``` r
 y <- c("1233", "123")
-str_extract(y, "\.")
+str_extract(y, ".")
 ```
 
-    ## Error: '\.' is an unrecognized escape in character string starting ""\."
+    ## [1] "1" "1"
 
-## matching multiple characters
+## Matching multiple characters
 
 There are a number of patterns that match more than one character.
 You’ve already seen `.`, which matches any character (except a newline).
@@ -305,10 +305,47 @@ characters:
 -   `\d` matches any digit. The complement, `\D` matches any character
     that is not a decimal digit.
 
+``` r
+str_extract_all("1 + 2 = 3", "\\d+")[[1]]
+```
+
+    ## [1] "1" "2" "3"
+
+``` r
+#> [1] "1" "2" "3"
+```
+
+Technically, `\d` includes any character in the Unicode Category of Nd
+(“Number, Decimal Digit”), which also includes numeric symbols from
+other languages:
+
+``` r
+# Some Laotian numbers
+str_detect("១២៣", "\\d")
+```
+
+    ## [1] TRUE
+
+``` r
+#> [1] TRUE
+```
+
 -   `\s` matches any whitespace. This includes tabs, newlines, form
     feeds, and any character in the Unicode Z Category (which includes a
     variety of space characters and other separators.). The complement,
     `\S`, matches any non-whitespace character.
+
+``` r
+(text <- "Some  \t badly\n\t\tspaced \f text")
+```
+
+    ## [1] "Some  \t badly\n\t\tspaced \f text"
+
+``` r
+str_replace_all(text, "\\s+", " ")
+```
+
+    ## [1] "Some badly spaced text"
 
 -   `\p{property name}` matches any character with specific unicode
     property, like `\p{Uppercase}` or `\p{diacritic}`. The complement,
@@ -325,6 +362,18 @@ characters:
     of forcefulness: normative, informative, contributory, or
     provisional.
 
+``` r
+(text <- c('"Double quotes"', "«Guillemet»", "“Fancy quotes”"))
+```
+
+    ## [1] "\"Double quotes\"" "«Guillemet»"       "“Fancy quotes”"
+
+``` r
+str_replace_all(text, "\\p{quotation mark}", "'")
+```
+
+    ## [1] "'Double quotes'" "'Guillemet'"     "'Fancy quotes'"
+
 -   `\w` matches any “word” character, which includes alphabetic
     characters, marks and decimal numbers. The complement, `\W`, matches
     any non-word character. Technically, `\w` also matches [connector
@@ -332,9 +381,33 @@ characters:
     `\u200c` (zero width connector), and `\u200d` (zero width joiner),
     but these are rarely seen in the wild.
 
+``` r
+str_extract_all("Don't eat that!", "\\w+")[[1]]
+```
+
+    ## [1] "Don"  "t"    "eat"  "that"
+
+``` r
+str_split("Don't eat that!", "\\W")[[1]]
+```
+
+    ## [1] "Don"  "t"    "eat"  "that" ""
+
 -   `\b` matches word boundaries, the transition between word and
     non-word characters. `\B` matches the opposite: boundaries that have
     either both word or non-word characters on either side.
+
+``` r
+str_replace_all("The quick brown fox", "\\b", "_")
+```
+
+    ## [1] "_The_ _quick_ _brown_ _fox_"
+
+``` r
+str_replace_all("The quick brown fox", "\\B", "_")
+```
+
+    ## [1] "T_h_e q_u_i_c_k b_r_o_w_n f_o_x"
 
 You can also create your own character classes using `[]`:
 
@@ -368,6 +441,94 @@ set operations, like `[\p{Letter}--\p{script=latin}]`. See
 
 A cheat-sheet of Regex is attached below
 ([source](http://stanford.edu/~wpmarble/webscraping_tutorial/regex_cheatsheet.pdf)):
+
+## Alternation
+
+`|` is the alternation operator and it picks between one or more
+possible matche, acting as the `or` logic expression.
+
+``` r
+str_detect(c("abc","def","ghi"), "abc|def")
+```
+
+    ## [1]  TRUE  TRUE FALSE
+
+## Grouping
+
+You can use parenthese to override the default precedence rules.
+
+``` r
+str_extract(c("grey", "gray"), "gre|ay")
+```
+
+    ## [1] "gre" "ay"
+
+``` r
+str_extract(c("grey", "gray"), "gr(e|a)y")
+```
+
+    ## [1] "grey" "gray"
+
+Parenthesis also define “groups” that you can refer to with
+backreferences, like `\1`, `\2` etc, and can be extracted with
+`str_match()`. For example, the following regular expression finds all
+fruits that have a repeated pair of letters:
+
+``` r
+pattern <- "(..)\\1"
+
+fruit %>% 
+  str_subset(pattern)
+```
+
+    ## [1] "banana"      "coconut"     "cucumber"    "jujube"      "papaya"     
+    ## [6] "salal berry"
+
+``` r
+fruit %>% 
+  str_subset(pattern) %>% 
+  str_match(pattern)
+```
+
+    ##      [,1]   [,2]
+    ## [1,] "anan" "an"
+    ## [2,] "coco" "co"
+    ## [3,] "cucu" "cu"
+    ## [4,] "juju" "ju"
+    ## [5,] "papa" "pa"
+    ## [6,] "alal" "al"
+
+You can use `(?:...)`, the non-grouping parentheses, to control
+precedence but not capture the match in a group. This is slightly more
+efficient than capturing parentheses.
+
+``` r
+str_match(c("grey", "gray"), "gr(e|a)y")
+```
+
+    ##      [,1]   [,2]
+    ## [1,] "grey" "e" 
+    ## [2,] "gray" "a"
+
+``` r
+str_match(c("grey", "gray"), "gr(?:e|a)y")
+```
+
+    ##      [,1]  
+    ## [1,] "grey"
+    ## [2,] "gray"
+
+This is most useful for more complex cases where you need to capture
+matches and control precedence independently.
+
+## Anchors
+
+By default, regular expressions will match any part of a string. It’s
+often useful to anchor the regular expression so that it matches from
+the start or end of the string:
+
+-   `^` matches the start of string.
+-   `$` matches the end of the string.
 
 ![Regular Expression Cheat Sheet](./images/regex_cheatsheet.pdf)
 
