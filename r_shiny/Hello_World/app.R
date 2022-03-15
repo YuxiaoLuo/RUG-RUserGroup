@@ -2,7 +2,7 @@
 
 library(shiny)
 
-# define user interface
+# define user interface object
 ui <- fluidPage(
   "Hello, world!"
 )
@@ -12,7 +12,7 @@ server <- function(input, output, session) {
 }
 
 # run shiny ap
-shinyApp(ui, server)
+shinyApp(ui = ui, server = server)
 
 # Listening on http://127.0.0.1:4103
 # This tells you URL where you app can be found: 127.0.0.1 is a standard address
@@ -20,8 +20,6 @@ shinyApp(ui, server)
 
 # You can enter that URL into any compatiblae web browser to open another copy
 # of the app 
-
-
 
 
 

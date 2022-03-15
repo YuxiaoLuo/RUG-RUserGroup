@@ -1,3 +1,5 @@
+library(shiny)
+
 ## Adding UI controls
 ui <- fluidPage(
   selectInput("dataset", label = "Dataset", choices = ls("package:datasets")),
@@ -39,6 +41,7 @@ server <- function(input, output, session){
 # summary with fixed-width (verbatim) text
 
 # renderTable() is paired with tableOutput() to show the input data in a table.
+
 
 shinyApp(ui, server)
 
