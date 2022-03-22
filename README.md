@@ -7,3 +7,14 @@ R User's Group (i.e., RUG) is a place for newbies and experts alike to learn and
 - Organizer: Digital Fellows at [GCDI](https://gcdi.commons.gc.cuny.edu/) (Graduate Center Digital Initiatives)
 - Current lead fellow: [Yuxiao Luo](https://github.com/YuxiaoLuo) (2021 Fall - )
 - Other events: you can find more events at the GCDI [Calendar](https://gcdi.commons.gc.cuny.edu/calendar/), including workshops in Python, R, Sound Editing, Data Ethics, etc..  
+
+## Topics
+
+- Text Analysis
+    - [Intro to `stringr`](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/RUG_stringr.md)
+    - [Intro to Regular Expression](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/RUG_RgularExpr.md)
+- R Markdown
+    - [Intro to R Markdown](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/Intro_RMarkdown.md)
+- R Shiny
+    - [Intro to R Shiny](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/r_shiny/intro_shiny.md)
+        - [R Shiny Scripts Folder](https://github.com/YuxiaoLuo/RUG-RUserGroup/tree/main/r_shiny)
