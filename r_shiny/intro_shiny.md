@@ -22,9 +22,10 @@ library(shiny)
 list.files()
 ```
 
-    ## [1] "app_2"             "avator.png"        "Hello_World"      
-    ## [4] "intro_shiny.md"    "intro_shiny.Rmd"   "intro_shiny_files"
-    ## [7] "main.R"            "r_shiny.Rproj"     "user_interface"
+    ##  [1] "app_2"             "data"              "exercise1"        
+    ##  [4] "Hello_World"       "intro_shiny.md"    "intro_shiny.Rmd"  
+    ##  [7] "intro_shiny_files" "main.R"            "r_shiny.Rproj"    
+    ## [10] "user_interface"
 
 To run the app of `Hello_World`.
 
@@ -186,7 +187,37 @@ ui <- fluidPage(
 #### Formatted text
 
 Shiny offers many tag functions for formatting text, same as the HTML
-tags.
+tags. Let’s try to write an example with formatted text.
+
+``` r
+ui <- fluidPage(
+  titlePanel("My Shiny App"),
+  sidebarLayout(
+    sidebarPanel(
+      strong("This is the sidebar Panel"),
+      p("Main panel shows the instruction on formatted text.")
+      
+    ),
+    mainPanel(
+      p("p creates a paragraph of text."),
+      p("A new p() command starts a new paragraph. Supply a style 
+      attribute to change the format of the entire paragraph.", 
+        style = "font-family: 'times'; font-sil16pt"),
+      strong("strong() makes bold text."), 
+      em("em() creates italicized (i.e, emphasized) text."), 
+      br(),
+      code("code displays your text similar to computer code"),
+      div("div creates segments of text with a similar style. This division
+          of text is all blue because I passed the argument 
+          'style = color:blue' to div", style = "color:blue"),
+      br(),
+      p("span does the same thing as div, but it works with",
+        span("groups of words", style = "color:blue"),
+        "that appear in side a paragraph.")
+    )
+  )
+)
+```
 
 #### Images
 
@@ -194,13 +225,151 @@ Shiny looks for the `img` function to place image files in your app. To
 insert an image, give the `img` function the name of your image file as
 the `src` argument (e.g., `img(src = "my_image.png"))`. You must spell
 out this argument since `img` passes your input to an HTML tag, and
-`src` is what the tag expects. Please always put the picture in the
-folder named `www`, which should be placed in the same directory of that
-Shiny app.
+`src` is what the tag expects.
+
+The `img` function looks for your image file in a specific place. Your
+file must be in a folder named `www`, which should be placed in the same
+directory of that Shiny app. Shiny treats this directory in a special
+way. While you don’t need to specify the folder path as
+`"/www/my_image.png"`, just leave it as `my_image.png` should work.
 
 You can also include other HTML friendly parameters such as height and
 width. Note that height and width numbers will refer to pixels.
 
 ``` r
 img(src = "my_image.png", height = 72, width = 72)
+```
+
+### Other tags
+
+There are many more tag functions for your to use. You can learn about
+the additional tag functions in [Customize your UI with
+HTML](https://shiny.rstudio.com/articles/html-tags.html) and [Shiny HTML
+Tags Glossary](https://shiny.rstudio.com/articles/tag-glossary.html).
+
+### Exercise 1
+
+Let’s try to make a a shiny App looks like the following picture:
+
+![exercise1](data/exercise1.JPG) \### Add control widgets
+
+This lesson will show you how to add control widgets to your Shiny apps.
+Widgets provide a way for your users to send messages to the Shiny app.
+Shiny widgets collect a value from your user. When a user changes the
+widget, the value will change as well. Shiny comes with a family of
+pre-build widgets, each created with a transparently named R function.
+For example, Shiny provides a function named `actionButton` that creates
+an Action Button and a function named `sliderInput` that creates a
+slider bar.
+
+The standard Shiny widgets are:
+
+| function           | widget                                         |
+|--------------------|------------------------------------------------|
+| actionButton       | Action Button                                  |
+| checkboxGroupInput | A group of check boxes                         |
+| checkboxInput      | A single check box                             |
+| dateInput          | A calendar to aid date selection               |
+| dateRangeInput     | A pair of calendars for selecting a date range |
+| fileInput          | A file upload control wizard                   |
+| helpText           | Help text that can be added to an input form   |
+| numericInput       | A field to enter numbers                       |
+| radioButtons       | A set of radio buttons                         |
+| selectInput        | A box with choices to select from              |
+| sliderInput        | A slider bar                                   |
+| submitButton       | A submit button                                |
+| textInput          | A field to enter text                          |
+
+#### Adding widgets
+
+You can add widgets to your web page in the same way that you added
+other types of HTML content. To add a widget to your app, place a widget
+function in `sidebarPanel` or `mainPanel` in your ui object.
+
+Each widget function requires several arguments. The first two arguments
+for each widget are:
+
+-   a name for the widget: The user will not see this name, but you can
+    use it to access the widget’s value. The name should be a character
+    string.
+
+-   a label: This label will appear with the widget in your app. It
+    should be a character string, but it can be an empty string ““.
+
+``` r
+ui <- fluidPage(
+  titlePanel("Basic widgets"),
+  
+  fluidRow(
+    
+    column(3,
+           h3("Buttons"),
+           actionButton("action", "Action"),
+           br(),
+           br(), 
+           submitButton("Submit")),
+    
+    column(3,
+           h3("Single checkbox"),
+           checkboxInput("checkbox", "Choice A", value = TRUE)),
+    
+    column(3, 
+           checkboxGroupInput("checkGroup", 
+                              h3("Checkbox group"), 
+                              choices = list("Choice 1" = 1, 
+                                             "Choice 2" = 2, 
+                                             "Choice 3" = 3),
+                              selected = 1)),
+    
+    column(3, 
+           dateInput("date", 
+                     h3("Date input"), 
+                     value = "2014-01-01"))   
+  ),
+  
+  fluidRow(
+    
+    column(3,
+           dateRangeInput("dates", h3("Date range"))),
+    
+    column(3,
+           fileInput("file", h3("File input"))),
+    
+    column(3, 
+           h3("Help text"),
+           helpText("Note: help text isn't a true widget,", 
+                    "but it provides an easy way to add text to",
+                    "accompany other widgets.")),
+    
+    column(3, 
+           numericInput("num", 
+                        h3("Numeric input"), 
+                        value = 1))   
+  ),
+  
+  fluidRow(
+    
+    column(3,
+           radioButtons("radio", h3("Radio buttons"),
+                        choices = list("Choice 1" = 1, "Choice 2" = 2,
+                                       "Choice 3" = 3),selected = 1)),
+    
+    column(3,
+           selectInput("select", h3("Select box"), 
+                       choices = list("Choice 1" = 1, "Choice 2" = 2,
+                                      "Choice 3" = 3), selected = 1)),
+    
+    column(3, 
+           sliderInput("slider1", h3("Sliders"),
+                       min = 0, max = 100, value = 50),
+           sliderInput("slider2", "",
+                       min = 0, max = 100, value = c(25, 75))
+    ),
+    
+    column(3, 
+           textInput("text", h3("Text input"), 
+                     value = "Enter text..."))   
+  )
+  
+)
 ```
