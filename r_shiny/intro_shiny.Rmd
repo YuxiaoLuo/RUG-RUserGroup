@@ -183,7 +183,7 @@ ui <- fluidPage(
       p("p creates a paragraph of text."),
       p("A new p() command starts a new paragraph. Supply a style 
       attribute to change the format of the entire paragraph.", 
-        style = "font-family: 'times'; font-sil16pt"),
+        style = "font-family: 'times'; font-sil16pt; font-size:30px"),
       strong("strong() makes bold text."), 
       em("em() creates italicized (i.e, emphasized) text."), 
       br(),
@@ -222,6 +222,26 @@ There are many more tag functions for your to use. You can learn about the addit
 Let's try to make a a shiny App looks like the following picture: 
 
 ![exercise1](data/exercise1.JPG)
+```{r Exercise1, eval=FALSE}
+ui <- fluidPage(
+  titlePanel("RUG (R User Group)"),
+  sidebarLayout(
+    sidebarPanel(
+      p("R User’s Group (i.e., RUG) is a place for newbies and experts 
+        alike to learn and work together on projects using the 
+        statistical programming language, R.")
+    ),
+    mainPanel(
+      h1("Meeting Schedule"),
+      strong("We are meeting on Friday 3-4 pm bi-weekly."),
+      h2("Meeting topics"),
+      hr("- Shiny"), p("- Markdown"), p("etc...") 
+    )
+  )
+)
+```
+
+
 ### Add control widgets
 
 This lesson will show you how to add control widgets to your Shiny apps.

@@ -202,7 +202,7 @@ ui <- fluidPage(
       p("p creates a paragraph of text."),
       p("A new p() command starts a new paragraph. Supply a style 
       attribute to change the format of the entire paragraph.", 
-        style = "font-family: 'times'; font-sil16pt"),
+        style = "font-family: 'times'; font-sil16pt; font-size:30px"),
       strong("strong() makes bold text."), 
       em("em() creates italicized (i.e, emphasized) text."), 
       br(),
@@ -251,7 +251,28 @@ Tags Glossary](https://shiny.rstudio.com/articles/tag-glossary.html).
 
 Let’s try to make a a shiny App looks like the following picture:
 
-![exercise1](data/exercise1.JPG) \### Add control widgets
+![exercise1](data/exercise1.JPG)
+
+``` r
+ui <- fluidPage(
+  titlePanel("RUG (R User Group)"),
+  sidebarLayout(
+    sidebarPanel(
+      p("R User’s Group (i.e., RUG) is a place for newbies and experts 
+        alike to learn and work together on projects using the 
+        statistical programming language, R.")
+    ),
+    mainPanel(
+      h1("Meeting Schedule"),
+      strong("We are meeting on Friday 3-4 pm bi-weekly."),
+      h2("Meeting topics"),
+      hr("- Shiny"), p("- Markdown"), p("etc...") 
+    )
+  )
+)
+```
+
+### Add control widgets
 
 This lesson will show you how to add control widgets to your Shiny apps.
 Widgets provide a way for your users to send messages to the Shiny app.
@@ -295,6 +316,19 @@ for each widget are:
 
 -   a label: This label will appear with the widget in your app. It
     should be a character string, but it can be an empty string ““.
+
+In this example, the name is “action” and the label is “Action”:
+`actionButton("action", label = "Action")`
+
+The app.R script below makes the app pictured above. Change your own
+`widgetPractice/app.R` script to match it, and then launch the app
+(runApp(“widgetPractice”), select Run App, or use shortcuts).
+
+Play with each widget to get a feel for what it does. Experiment with
+changing the values of the widget functions and observe the effects. If
+you are interested in the layout scheme for this Shiny app, read the
+description in the [application layout
+guide](https://shiny.rstudio.com/articles/layout-guide.html).
 
 ``` r
 ui <- fluidPage(
