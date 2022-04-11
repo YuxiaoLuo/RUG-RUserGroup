@@ -58,5 +58,5 @@ shinyApp(ui = ui, server = server)
 #   1. sidebarPanel 
 #   2. mainPanel
 
-runApp('user_interface')
+runApp('widgePractice')
 

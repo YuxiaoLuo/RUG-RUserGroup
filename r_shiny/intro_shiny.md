@@ -23,9 +23,9 @@ list.files()
 ```
 
     ##  [1] "app_2"             "data"              "exercise1"        
-    ##  [4] "Hello_World"       "intro_shiny.md"    "intro_shiny.Rmd"  
-    ##  [7] "intro_shiny_files" "main.R"            "r_shiny.Rproj"    
-    ## [10] "user_interface"
+    ##  [4] "exercise2"         "Hello_World"       "intro_shiny.md"   
+    ##  [7] "intro_shiny.Rmd"   "intro_shiny_files" "main.R"           
+    ## [10] "r_shiny.Rproj"     "user_interface"    "widgePractice"
 
 To run the app of `Hello_World`.
 
@@ -301,28 +301,32 @@ The standard Shiny widgets are:
 | submitButton       | A submit button                                |
 | textInput          | A field to enter text                          |
 
+Some of these widgets are built using the [Twitter Bootstrap
+project](https://getbootstrap.com/), a popular open source framework for
+building user interfaces.
+
 #### Adding widgets
 
 You can add widgets to your web page in the same way that you added
 other types of HTML content. To add a widget to your app, place a widget
-function in `sidebarPanel` or `mainPanel` in your ui object.
+function in `sidebarPanel` or `mainPanel` in your `ui` object.
 
 Each widget function requires several arguments. The first two arguments
 for each widget are:
 
--   a name for the widget: The user will not see this name, but you can
-    use it to access the widget’s value. The name should be a character
-    string.
+-   a **name for the widget**: The user will not see this name, but you
+    can use it to access the widget’s value. The name should be a
+    character string.
 
--   a label: This label will appear with the widget in your app. It
-    should be a character string, but it can be an empty string ““.
+-   a **label**: This label will appear with the widget in your app. It
+    should be a character string, but it can be an empty string `""`.
 
-In this example, the name is “action” and the label is “Action”:
-`actionButton("action", label = "Action")`
+In this example, the name is “rug” and the label is “RUG”:
+`actionButton("rug", label = "RUG")`
 
 The app.R script below makes the app pictured above. Change your own
 `widgetPractice/app.R` script to match it, and then launch the app
-(runApp(“widgetPractice”), select Run App, or use shortcuts).
+(`runApp("widgetPractice")`, select Run App, or use shortcuts).
 
 Play with each widget to get a feel for what it does. Experiment with
 changing the values of the widget functions and observe the effects. If
@@ -407,3 +411,37 @@ ui <- fluidPage(
   
 )
 ```
+
+### Exercise 2
+
+Create a new Shiny app and name it `exercise2` and create the user
+interface displayed below.
+
+![exercise2](data/exercise2.jpg)
+
+## Shiny Widgets Gallery
+
+[Shiny widgets
+gallery](https://shiny.rstudio.com/gallery/widget-gallery.html) provides
+many templates for quickly adding widgets to the Shiny apps. It displays
+each of Shiny’s widgets and shows you how widgets’ values change in
+resonse to the input. You can also click “See Code” button to see the
+code and copy-paste the code in the example’s `app.R` file to your own
+Shiny app’s `app.R` file.
+
+## Shiny Cheatsheet
+
+<embed src="data/shiny-cheatsheet.pdf" title="Some cool caption" alt="Some cool caption" width="0.75\linewidth" style="display: block; margin: auto;" type="application/pdf" />
+
+## Reference
+
+-   [Tutorials from Shiny RStudio](https://shiny.rstudio.com/)
+
+-   [Shiny or Flex dash
+    boards?](https://shiny.rstudio.com/articles/dashboards.html)
+
+    -   [Shiny dash
+        boards](http://rstudio.github.io/shinydashboard/?_ga=2.230917343.1101271154.1646425886-1514070170.1642001812)
+
+    -   [Flex dash
+        board](https://pkgs.rstudio.com/flexdashboard/articles/using.html#storyboards)
