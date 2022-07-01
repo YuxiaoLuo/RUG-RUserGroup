@@ -419,6 +419,8 @@ interface displayed below.
 
 ![exercise2](data/exercise2.jpg)
 
+### Display reactive output
+
 ## Shiny Widgets Gallery
 
 [Shiny widgets
