@@ -81,7 +81,7 @@ ggplot(diamonds, aes(x = z, y = price, color = clarity)) +
   geom_point()
 
 # since there is one outlier affecting overall plot
-# we want to set the x-axis limits
+# we want to set the x-axis limits using coord_cartesian()
 ggplot(diamonds, aes(x = z, y = price, color = clarity)) + 
   geom_point() + 
   coord_cartesian(xlim = c(0,10))
@@ -90,10 +90,130 @@ ggplot(diamonds, aes(x = z, y = price, color = clarity)) +
 # expand = TRUE, default = FALSE, clip = “on)
 
 # change colors manually 
-# scale_fill_manual()
-# scale_color_manual()
+# scale_fill_manual() for bars
+# scale_color_manual() points
 
+# website to find color code: https://www.rapidtables.com/web/color/RGB_Color.html
+ggplot(diamonds, aes(x = z, y = price, color = clarity)) + 
+  geom_point() + 
+  coord_cartesian(xlim = c(0,10)) + 
+  scale_color_manual(values = c("#999999", 
+                               "#E69F00", 
+                               "#56B4E9", 
+                               "#FF00FF", 
+                               "#008000",
+                               "#B22222",
+                               "#228B22",
+                               "#2F4F4F"))
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity)) + 
+  scale_fill_manual(values = c("#999999", 
+                               "#E69F00", 
+                               "#56B4E9", 
+                               "#FF00FF", 
+                               "#008000",
+                               "#B22222",
+                               "#228B22",
+                               "#2F4F4F"))
+
+# argument breaks can change order of levels in legend
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, fill = clarity)) + 
+  scale_fill_manual(values = c("#999999", 
+                               "#E69F00", 
+                               "#56B4E9", 
+                               "#FF00FF", 
+                               "#008000",
+                               "#B22222",
+                               "#228B22",
+                               "#2F4F4F"),
+                    breaks = c("IF", 
+                               "VVS1", 
+                               "VVS2",
+                               "VS1",
+                               "VS2",
+                               "SI1",
+                               "SI2",
+                               "I1"))
+
+##########################
 # RColorBrewer palettes
+# R package: RColorBrewer
+# pre-defined color combination ready for use
+
+db <- ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, fill = clarity))
+
+dp <- ggplot(data = diamonds) + 
+  geom_point(aes(x = z, y = price, color = clarity)) + 
+  coord_cartesian(xlim = c(0,10))
+
+# bar plot using RColorBrewer
+db + scale_fill_brewer(palette = "Dark2")
+db + scale_fill_brewer(palette = "Greens")
+db + scale_fill_brewer(palette = "Blues")
+db + scale_fill_brewer(palette = "YlGnBu")
+db + scale_fill_brewer(palette = "YlGn")
+
+dp + scale_color_brewer(palette = "Purples")
+dp + scale_color_brewer(palette = "PuRd")
+
+###############################################
+# another package: Wes Anderson color palettes
+# most palettes now only have 4 or 5 colors
+# color schemes from: https://wesandersonpalettes.tumblr.com/
+# install.packages("wesanderson")
+library(wesanderson)
+
+ggplot(data = mpg) + 
+  geom_bar(aes(x = fl, fill = drv)) + 
+  scale_fill_manual(values = wes_palette(n = 3, name = "Moonrise3"))
+
+ggplot(data = mpg) + 
+  geom_bar(aes(x = fl, fill = drv)) + 
+  scale_fill_manual(values = wes_palette(n = 3, name = "Royal2"))
+
+# use gray colors
+db + scale_fill_grey() 
+db + scale_fill_grey() + theme_classic()
+
+# change gray value at low and high ends of the palette
+db + scale_fill_grey(start = .8, end = .2) + theme_classic()
+
+#############################
+# continuous color
+
+# scale_color_gradient(), scale_fill_gradient() -> sequential gradients between 2 colors
+# scale_color_gradient2(), scale_fill_gradient2() -> diverging gradients
+# scale_color_gradientn(), scale_fill_gradientn() -> gradient between n colors
+
+dp <- ggplot(diamonds) + geom_point(aes(x = cut, y = z, color = price)) + 
+  coord_cartesian(ylim = c(1, 7))
+
+# continous color assigned automatically
+dp
+
+# sequential color scheme
+dp + scale_color_gradient(low = 'blue', high = 'red')
+
+# diverging color scheme
+mid <- mean(diamonds$z)
+dp + scale_color_gradient2(midpoint = mid, low = "blue", mid = "white", 
+                           high = "red")
+
+
+# gradient between n colors
+dp + scale_color_gradientn(colors = rainbow(5))
+
+
+
+
+
+
+
+
+
 
 
 
