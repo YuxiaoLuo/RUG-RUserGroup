@@ -77,6 +77,18 @@ plot(cookd)
 # add cutoff line
 abline(h = 4/nrow(spo), lty = 2, col = 'red')
 
+# leverages
+hatvalues(lm_spo)
+plot(hatvalues(lm_spo))
+
+# residuals 
+residuals(lm_spo)
+plot(residuals(lm_spo))
+
+# standardized residuals
+rstandard(lm_spo)
+plot(rstandard(lm_spo))
+
 ####################
 # multicollinearity 
 # check the correlations among the independent vars
