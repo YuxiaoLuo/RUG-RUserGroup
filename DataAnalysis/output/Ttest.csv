@@ -1,0 +1,2 @@
+Sample_Mean,t_statistic,p.value,df,conf.low,conf.high,method,alternative
+4.1,4.378915955229762,0.001773916547606698,9,1.0571634037382236,7.142836596261777,One Sample t-test,two.sided

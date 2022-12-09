@@ -2,9 +2,8 @@
 title: "Strings_RUG"
 author: "Yuxiao Luo"
 date: "10/8/2021"
-output: 
-  html_document:
-    keep_md: true
+output: html_document
+  
 ---
 
 ```{r setup, include=FALSE}
@@ -211,7 +210,7 @@ str_subset(strings, phone)
 str_subset(strings, phone, negate = T)
 ```
 
-- `str_count` counts number of matches in each string 
+- `string_count` counts number of matches in each string 
 
 - ` str_loate` locates the **first** position of a pattern and returns a numeric matrix with columns start and end. 
 
