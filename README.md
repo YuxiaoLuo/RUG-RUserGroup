@@ -13,8 +13,13 @@ R User's Group (i.e., RUG) is a place for newbies and experts alike to learn and
 - Text Analysis
     - [Intro to `stringr`](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/RUG_stringr.md)
     - [Intro to Regular Expression](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/RUG_RgularExpr.md)
+    - [Corpus, Document Term Matrix, TF-IDF](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/DataAnalysis/Corpus_DTM_TFIDF.R)
+    - [Topic Modeling](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/DataAnalysis/topicmodel.R)
+- Statistical Analysis
+    - [Hypothesis testing](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/DataAnalysis/HypothesisTest.R)
 - R Markdown
     - [Intro to R Markdown](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/Intro_RMarkdown.md)
 - R Shiny
     - [Intro to R Shiny](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/r_shiny/intro_shiny.md)
         - [R Shiny Scripts Folder](https://github.com/YuxiaoLuo/RUG-RUserGroup/tree/main/r_shiny)
+- [Summer Meetings 2022](https://github.com/YuxiaoLuo/RUG-RUserGroup/tree/main/summer_meeting)
