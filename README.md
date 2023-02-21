@@ -23,3 +23,5 @@ R User's Group (i.e., RUG) is a place for newbies and experts alike to learn and
     - [Intro to R Shiny](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/r_shiny/intro_shiny.md)
         - [R Shiny Scripts Folder](https://github.com/YuxiaoLuo/RUG-RUserGroup/tree/main/r_shiny)
 - [Summer Meetings 2022](https://github.com/YuxiaoLuo/RUG-RUserGroup/tree/main/summer_meeting)
+
+- [Intro to Geocoding in R ](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/Tidygeocoder.md)
