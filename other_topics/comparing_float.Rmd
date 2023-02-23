@@ -101,7 +101,7 @@ Try another example:
 ```{r compare-float4}
 (0.5-0.3) %==% (0.3-0.1)
 ```
-Last tip, sometimes you see scientific notation in R and want to avoid it. You can use the `scipen` argument in `options`. Decreasing the value of `scipen` will cause R to switch to scientific location for larger numbers. Default is `scipen = 0`. 
+Last tip, sometimes you see scientific notation in R and want to avoid it. You can use the `scipen` argument in `options`. Decreasing the value of `scipen` will cause R to switch to scientific notation for larger numbers. Default is `scipen = 0`. 
 
 ```{r scipen}
 options(scipen = 4)
