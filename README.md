@@ -22,6 +22,10 @@ R User's Group (i.e., RUG) is a place for newbies and experts alike to learn and
 - R Shiny
     - [Intro to R Shiny](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/r_shiny/intro_shiny.md)
         - [R Shiny Scripts Folder](https://github.com/YuxiaoLuo/RUG-RUserGroup/tree/main/r_shiny)
-- [Summer Meetings 2022](https://github.com/YuxiaoLuo/RUG-RUserGroup/tree/main/summer_meeting)
+- Other Topics
+    - [Intro to Geocoding in R ](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/Tidygeocoder.md)
+    - [Compare Floats in R](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/other_topics/comparing_float.md)
 
-- [Intro to Geocoding in R ](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/Tidygeocoder.md)
+## Summer Meetings
+
+- - [Summer Meetings 2022](https://github.com/YuxiaoLuo/RUG-RUserGroup/tree/main/summer_meeting)
