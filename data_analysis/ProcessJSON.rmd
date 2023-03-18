@@ -1,0 +1,129 @@
+---
+title: "Process JSON in R"
+author: "Yuxiao Luo"
+date: "2023-03-17"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Process JSON in R
+
+The JSON data format is designed to allow different machines or systems to communicate with each other via messages constructed in a well defined format. JSON is now the most popular and preferred data format used by APIs (Application Programming Interfaces).
+
+The JSON format is different from the most `.csv` type data, but it's still human readable and can also be mapped to an R dataframe/tibble. In this tutorial, let's read a file of data in JSON format and convert it a dataframe in R. Last, we will export the dataframe to a csv file. 
+
+We will use a JSON file called `SAFI.json`, which is the output file from an electronic survey system called ODK. The JSON records the answers to some survey questions. The unique keys represent each question while the values are the input answers. I found and stole this data source from [R for Social Scientists](https://datacarpentry.org/r-socialsci/07-json/index.html), many thanks to the author. 
+
+### Why we use JSON
+
+There are many advantages of using JSON.
+
+- Popular and common for APIs (e.g., results from an internet search, results from Twitter API)
+- Human readable
+- Documents don't have to be formatted as strictly the same
+  - Each document can have different structure in the same file
+  - This is realistic when dealing with raw/unstructured data
+  - The document structure is scalable, which means it could be complex and nested. It could also be simple and only have few layers in the structure. 
+- Each record (document) is self-contained. The equivalent of the column name and column values are in every record. 
+
+There are also a few drawbacks. 
+
+- It's more verbose than a `.csv` format data
+- It's less readable than a structured `.csv` data.
+- It can be more difficult to process and display than `.csv` data. 
+
+### Use JSON package to read JSON file
+
+First, download the `SAFI.json` data from the `data` folder in GitHub repo to your local desktop. The location of the data in GitHub should be [here](https://github.com/YuxiaoLuo/RUG-RUserGroup/tree/main/data).
+
+Then, load `jsonlite` package and use `read_json` to read the JSON data. If you haven't installed the package, please run `install.packages('jsonlite')`.
+
+```{r read JSON}
+library(jsonlite)
+json_data <- read_json(path = 'data/SAFI.json')
+```
+
+As you see, the JSON data is a large list (from the Environment pane) with 131 elements. If you use `head()` or `View()`, remember to use `[[index]]` to extract the specific list, otherwise it will show much more structure, which is hard to read. 
+
+```{r view JSON, message=FALSE, warning=FALSE}
+library(tidyverse)
+head(json_data[[1]])
+head(json_data[[2]])
+```
+
+Or, we can change the parameter `simplifyVector` in `read_json()` to simplify nested lists into vectors in JSON. So, let's set this to `TRUE` and the data will be read as dataframe.
+
+```{r read JSON simplify}
+jd <- read_json(path = 'data/SAFI.json', simplifyVector = TRUE)
+glimpse(jd)
+```
+
+Looking at the column description, we find some columns are list type and dataframes are included in there. For example, `F_liv` is a list of dataframes. To look into the column of lists, we first extract the column and then extract the list using `[[index]]`. For example, the `F_liv` column list in the data contains 131 dataframes.
+
+```{r list column}
+length(jd$F_liv)
+```
+We can extract a dataframe in the column list.
+
+```{r extract list column}
+jd$F_liv[[1]]
+```
+
+You can also try to convert this specific list of dataframes into a 2-column table to better look through the information. 
+
+```{r convert to table}
+as.data.frame(as.matrix(unlist(jd$F_liv))) %>% head()
+```
+
+For each column that is list of dataframes, you need to convert it individually. With the data frame, we can use filter features to wrangle the data. Let's first create a column from the row names.
+
+```{r wrangle json}
+jd_liv <- as.data.frame(as.matrix(unlist(jd$F_liv)))
+jd_liv <- as.data.frame(jd_liv) %>% rename(A = V1) %>% 
+  rownames_to_column(var = "Q") 
+```
+
+Assume we want to find all `F11_no_owned` with the value of 4. Let's return the first 5 rows.
+
+```{r filter json}
+jd_liv %>% filter(if_any(Q, ~str_detect(.,"F11_no_owned")), 
+                  A == 4) %>% head(5)
+```
+
+Assume we want to find all `F_curr_liv` with the value of cows. 
+
+```{r wrangle json 2}
+jd_liv %>% filter(if_any(Q, ~str_detect(., "F_curr_liv")),
+                  A == "cows") %>% head(5)
+```
+
+#### Write JSON file to csv
+
+Notice that since some columns are lists of dataframes, if we want to convert JSON to csv. We will need to change these columns from list type to character type. 
+
+```{r flattern json}
+flatten_json <- apply(jd, 2, as.character) %>% as_tibble()
+head(flatten_json)
+```
+
+Then, we can write this flattened dataframe to csv file.
+
+```{r write csv}
+write_csv(flatten_json, file = "output/JSON_to_CSV.csv")
+```
+
+When you try to read this csv into R again, the column of the nested dataframes are character/string now. And now is hard to reverse it back to dataframes. So I highly recommend you to store a copy of the data in the original JSON format. Or you store each nested dataframes to a csv like the code shows below.
+
+```{r write dataframe}
+write_csv(jd$F_liv[[3]], file = "output/F_liv_to_csv.csv")
+```
+
+There is another package can deal with `JSON` in R called [tidyjson](https://cran.microsoft.com/snapshot/2017-08-01/web/packages/tidyjson/vignettes/introduction-to-tidyjson.html). Let's explore it next time.
+
+### Reference 
+- [R for Social Data Scientist](https://datacarpentry.org/r-socialsci/07-json/index.html)
+
+
