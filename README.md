@@ -10,6 +10,8 @@ R User's Group (i.e., RUG) is a place for newbies and experts alike to learn and
 
 ## Topics
 
+- Data Wrangling
+    - [Process JSON](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/data_analysis/ProcessJSON.md)
 - Text Analysis
     - [Intro to `stringr`](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/RUG_stringr.md)
     - [Intro to Regular Expression](https://github.com/YuxiaoLuo/RUG-RUserGroup/blob/main/RUG_RgularExpr.md)
